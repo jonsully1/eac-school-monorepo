@@ -1,5 +1,5 @@
 export interface DatabaseClient {
-  findOne<T>(collectionOrTable: string, filter: any): Promise<T | null>;
+  findOne: <T>(collectionOrTable: string, filter: any) => Promise<T | null>;
   // insertOne<T>(collectionOrTable: string, data: T): Promise<void>;
   // updateOne<T>(
   //   collectionOrTable: string,

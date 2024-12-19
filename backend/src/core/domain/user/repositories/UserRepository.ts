@@ -1,4 +1,4 @@
-import { DatabaseClient } from "../../common/persistence/DatabaseClient";
+import { DatabaseClient } from "../../../common/DatabaseClient";
 import { User } from "../entities/User";
 
 export type UserRepository = {

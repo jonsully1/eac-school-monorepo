@@ -1,4 +1,4 @@
-import { DatabaseClient } from "../../common/persistence/DatabaseClient";
+import { DatabaseClient } from "../../../common/DatabaseClient";
 import { Credentials, User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
 import { PasswordValidator } from "../services/PasswordValidator";

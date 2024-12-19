@@ -1,30 +1,14 @@
 import { LoginUseCase } from "../../../../../src/core/domain/user/use-cases/LoginUseCase";
-import { UserRepository } from "../../../../../src/core/domain/user/repositories/UserRepository";
-import { PasswordValidator } from "../../../../../src/core/domain/user/services/PasswordValidator";
-import { DatabaseClient } from "../../../../../src/core/domain/common/persistence/DatabaseClient";
-
-const MockDatabaseClient: DatabaseClient = {
-  findOne: jest.fn(),
-};
-
-const MockUserRespository: UserRepository = {
-  findByEmail: jest.fn(),
-};
-
-const MockPasswordValidator: PasswordValidator = {
-  validate: jest.fn(),
-};
-
-const credentials = { email: "user@email.com", password: "secretPassword" };
+import { MockDatabaseClient } from "../../../../mockData/mockDatabaseClient";
+import { MockPasswordValidator } from "../../../../mockData/mockPasswordValidator";
+import {
+  mockUser,
+  mockLoginCredentials,
+  MockUserRespository,
+} from "../../../../mockData/mockUser";
 
 describe("Login Use Case", () => {
   it("should return the user object when password is correct", async () => {
-    const mockUser = {
-      id: "1",
-      email: credentials.email,
-      password: "asdfshfiwjebhwpefu9348mvt3498c",
-    };
-
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
     jest.spyOn(MockPasswordValidator, "validate").mockResolvedValue(true);
 
@@ -32,7 +16,7 @@ describe("Login Use Case", () => {
       MockDatabaseClient,
       MockUserRespository,
       MockPasswordValidator,
-      credentials,
+      mockLoginCredentials,
     );
 
     expect(response).toStrictEqual(mockUser);
@@ -46,20 +30,13 @@ describe("Login Use Case", () => {
         MockDatabaseClient,
         MockUserRespository,
         MockPasswordValidator,
-        credentials,
+        mockLoginCredentials,
       ),
     ).rejects.toThrow("User not found");
   });
 
   it("should return false if the user password is not valid", async () => {
-    const credentials = { email: "user@email.com", password: "secretPassword" };
-
-    jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue({
-      id: "1",
-      email: credentials.email,
-      password: "asdfshfiwjebhwpefu9348mvt3498c",
-    });
-
+    jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
     jest.spyOn(MockPasswordValidator, "validate").mockResolvedValue(false);
 
     await expect(
@@ -67,7 +44,7 @@ describe("Login Use Case", () => {
         MockDatabaseClient,
         MockUserRespository,
         MockPasswordValidator,
-        credentials,
+        mockLoginCredentials,
       ),
     ).rejects.toThrow("Invalid credential");
   });
