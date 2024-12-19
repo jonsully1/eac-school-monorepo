@@ -1,0 +1,12 @@
+{
+  "name": "eac-school-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:backend": "npm --prefix backend test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
