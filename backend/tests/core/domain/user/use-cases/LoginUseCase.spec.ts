@@ -1,6 +1,11 @@
 import { LoginUseCase } from "../../../../../src/core/domain/user/use-cases/LoginUseCase";
 import { UserRepository } from "../../../../../src/core/domain/user/repositories/UserRepository";
 import { PasswordValidator } from "../../../../../src/core/domain/user/services/PasswordValidator";
+import { DatabaseClient } from "../../../../../src/core/domain/common/persistence/DatabaseClient";
+
+const MockDatabaseClient: DatabaseClient = {
+  findOne: jest.fn(),
+};
 
 const MockUserRespository: UserRepository = {
   findByEmail: jest.fn(),
@@ -11,7 +16,6 @@ const MockPasswordValidator: PasswordValidator = {
 };
 
 const credentials = { email: "user@email.com", password: "secretPassword" };
-
 
 describe("Login Use Case", () => {
   it("should return the user object when password is correct", async () => {
@@ -25,6 +29,7 @@ describe("Login Use Case", () => {
     jest.spyOn(MockPasswordValidator, "validate").mockResolvedValue(true);
 
     const response = await LoginUseCase(
+      MockDatabaseClient,
       MockUserRespository,
       MockPasswordValidator,
       credentials,
@@ -37,7 +42,12 @@ describe("Login Use Case", () => {
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(false);
 
     await expect(
-      LoginUseCase(MockUserRespository, MockPasswordValidator, credentials),
+      LoginUseCase(
+        MockDatabaseClient,
+        MockUserRespository,
+        MockPasswordValidator,
+        credentials,
+      ),
     ).rejects.toThrow("User not found");
   });
 
@@ -53,7 +63,12 @@ describe("Login Use Case", () => {
     jest.spyOn(MockPasswordValidator, "validate").mockResolvedValue(false);
 
     await expect(
-      LoginUseCase(MockUserRespository, MockPasswordValidator, credentials),
+      LoginUseCase(
+        MockDatabaseClient,
+        MockUserRespository,
+        MockPasswordValidator,
+        credentials,
+      ),
     ).rejects.toThrow("Invalid credential");
   });
 });
