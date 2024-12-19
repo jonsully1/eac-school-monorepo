@@ -1,19 +1,27 @@
-import { UserRespository } from "../repositories/UserRepository";
+import { Credentials, User } from "../entities/User";
+import { UserRepository } from "../repositories/UserRepository";
 import { PasswordValidator } from "../services/PasswordValidator";
 
-export const LoginUseCase = async (
-  userRespository: UserRespository,
-  passwordValidator: PasswordValidator,
-  credentials: { email: string; password: string },
-): Promise<{ email: string } | false> => {
-  const user = await userRespository.findByEmail(credentials.email);
+interface ILoginUseCase {
+  (
+    userRepository: UserRepository,
+    passwordValidator: PasswordValidator,
+    credentials: Credentials,
+  ): Promise<User | false>;
+}
+
+export const LoginUseCase: ILoginUseCase = async (
+  userRespository,
+  passwordValidator,
+  credentials,
+) => {
+  const user = await userRespository.findByEmail(credentials?.email);
   if (!user) throw new Error("User not found");
 
-  const isValid = await passwordValidator.validate(
-    credentials.password,
-    user.password,
-  );
-  if (!isValid) throw new Error("Invalid credentials");
+  if (
+    !(await passwordValidator.validate(credentials?.password, user?.password))
+  )
+    throw new Error("Invalid credentials");
 
-  return { email: user.email };
+  return user;
 };

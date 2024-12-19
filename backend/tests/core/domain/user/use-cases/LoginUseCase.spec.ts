@@ -1,8 +1,8 @@
 import { LoginUseCase } from "../../../../../src/core/domain/user/use-cases/LoginUseCase";
-import { UserRespository } from "../../../../../src/core/domain/user/repositories/UserRepository";
+import { UserRepository } from "../../../../../src/core/domain/user/repositories/UserRepository";
 import { PasswordValidator } from "../../../../../src/core/domain/user/services/PasswordValidator";
 
-const MockUserRespository: UserRespository = {
+const MockUserRespository: UserRepository = {
   findByEmail: jest.fn(),
 };
 
@@ -10,16 +10,18 @@ const MockPasswordValidator: PasswordValidator = {
   validate: jest.fn(),
 };
 
-describe("Login Use Case", () => {
-  it("should return the user's email when password is correct", async () => {
-    const credentials = { email: "user@email.com", password: "secretPassword" };
+const credentials = { email: "user@email.com", password: "secretPassword" };
 
-    jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue({
+
+describe("Login Use Case", () => {
+  it("should return the user object when password is correct", async () => {
+    const mockUser = {
       id: "1",
       email: credentials.email,
       password: "asdfshfiwjebhwpefu9348mvt3498c",
-    });
+    };
 
+    jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
     jest.spyOn(MockPasswordValidator, "validate").mockResolvedValue(true);
 
     const response = await LoginUseCase(
@@ -28,14 +30,10 @@ describe("Login Use Case", () => {
       credentials,
     );
 
-    expect(response).toStrictEqual({
-      email: credentials.email,
-    });
+    expect(response).toStrictEqual(mockUser);
   });
 
   it("should throw error if user email is not found", async () => {
-    const credentials = { email: "user@email.com", password: "secretPassword" };
-
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(false);
 
     await expect(
