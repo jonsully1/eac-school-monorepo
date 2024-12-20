@@ -1,5 +1,5 @@
 import { type EmailService } from "../../../../../src/core/domain/user/services/EmailService";
-import { createEmailService } from "../../../../../src/infrastructure/user/services/EmailService";
+import { createEmailService } from "../../../../../src/infrastructure/user/services/EmailServiceImpl";
 import {
   mockBaseUrl,
   mockExpectedMagicLink,

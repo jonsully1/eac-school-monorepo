@@ -3,7 +3,7 @@ import { SessionService } from "../../../../../src/core/domain/user/services/Ses
 import {
   createSessionService,
   type CustomJwtPayload,
-} from "../../../../../src/infrastructure/user/services/SessionService";
+} from "../../../../../src/infrastructure/user/services/SessionServiceImpl";
 import { envVars } from "../../../../../src/utils/envVars";
 import { mockUser } from "../../../../mockData/mockUser";
 
