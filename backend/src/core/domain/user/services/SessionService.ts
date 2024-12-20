@@ -1,4 +1,4 @@
 export type SessionService = {
   validateToken(token: string): Promise<boolean>;
-  generateToken(uuid: string): Promise<string>;
+  generateToken(uuid: string): Promise<string | false>;
 };

@@ -7,7 +7,7 @@ import {
 import { envVars } from "../../../../../src/utils/envVars";
 import { mockUser } from "../../../../mockData/mockUser";
 
-describe("SessionService", () => {
+describe("SessionServiceImpl", () => {
   const fakeToken = "sdfdhrehgerg.ewrf1234213423.r24rdfsdf";
   const payload = { id: 1 };
   const options = { expiresIn: 0 };
@@ -39,15 +39,24 @@ describe("SessionService", () => {
 
   describe("generateToken", () => {
     it("should return a signed token", async () => {
-      const response = await SessionService!.generateToken(mockUser.uuid);
-      const decoded = jwt.verify(response, secret!) as CustomJwtPayload;
-      expect(decoded.uuid).toStrictEqual(mockUser.uuid);
+      const response = (await SessionService!.generateToken(
+        mockUser.uuid,
+      )) as string;
+
+      const verified = jwt.verify(
+        response,
+        secret!,
+      ) as unknown as CustomJwtPayload;
+      expect(verified.uuid).toStrictEqual(mockUser.uuid);
     });
 
-    it("should throw an error if uuid is missing", async () => {
-      await expect(SessionService!.generateToken("")).rejects.toThrow(
-        "uuid is required",
-      );
+    it("should return false if error is thrown", async () => {
+      // mocking the implementation technically this means its not an integration test
+      jest.spyOn(jwt, "sign").mockImplementation(() => {
+        throw new Error("Failed to sign");
+      });
+      const response = await SessionService!.generateToken(mockUser.uuid);
+      expect(response).toBe(false);
     });
   });
 });

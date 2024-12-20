@@ -1,8 +1,12 @@
+import { GenerateTokenError } from "../errors/GenerateTokenError";
+import { MagicLinkInvalidError } from "../errors/MagicLinkInvalidError";
+import { SendMagicLinkError } from "../errors/SendMagicLinkError";
 import { UserInvalidError } from "../errors/UserInvalidError";
 import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { UserRepository } from "../repositories/UserRepository";
 import { EmailService } from "../services/EmailService";
 import { SessionService } from "../services/SessionService";
+import { isValidMagicLink } from "../validations/isValidMagicLink";
 import { isValidUser } from "../validations/isValidUser";
 
 type SendMagicLinkArgs = {
@@ -31,8 +35,16 @@ export const createSendMagicLinkUseCase = ({
     if (!isValidUser(user)) throw UserInvalidError("User invalid");
 
     const token = await sessionService.generateToken(user.uuid);
+    if (!token) throw GenerateTokenError("Failed to generate token");
+
     const magicLink = await emailService.generateMagicLink(baseUrl, token);
+    if (!isValidMagicLink(magicLink, baseUrl, token)) {
+      throw MagicLinkInvalidError("Invalid magic link");
+    }
+
     const response = await emailService.sendMagicLinkEmail(magicLink);
+    if (!response) throw SendMagicLinkError("Failed to send magic link email");
+
     return { message: response };
   };
 };
