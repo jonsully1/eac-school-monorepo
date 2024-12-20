@@ -1,0 +1,24 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "transform": {
+    "^.+\\.ts$": "ts-jest"
+  },
+  "transformIgnorePatterns": ["node_modules/"],
+  "collectCoverage": true,
+  "coverageDirectory": "coverage",
+  "collectCoverageFrom": ["src/core/**/*.ts"],
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 90,
+      "lines": 95,
+      "statements": 95
+    }
+  },
+  "clearMocks": true,
+  "restoreMocks": true,
+  "resetMocks": true,
+  "testTimeout": 3000,
+  "testMatch": ["<rootDir>/tests/unit/**/*.spec.ts"]
+}

@@ -6,6 +6,6 @@
     "outDir": "./dist",
     "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
+  "include": ["src/**/*.ts", "tests/**/*.ts", "tests/integration/globalSetup.integration.ts"],
   "exclude": ["node_modules"]
 }

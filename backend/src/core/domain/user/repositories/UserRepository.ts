@@ -1,9 +1,6 @@
-import { DatabaseClient } from "../../../common/DatabaseClient";
 import { User } from "../entities/User";
 
 export type UserRepository = {
-  findByEmail: (
-    dbClient: DatabaseClient,
-    email: string,
-  ) => Promise<User | false>;
+  findByEmail: (email: string) => Promise<User | null>;
+  // createUser: (user: User) => Promise<User>;
 };

@@ -1,30 +1,31 @@
-import { DatabaseClient } from "../../../common/DatabaseClient";
-import { Credentials, User } from "../entities/User";
+import { User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
-import { PasswordValidator } from "../services/PasswordValidator";
+import { TokenValidator } from "../services/TokenValidator";
 
-interface ILoginUseCase {
-  (
-    dbClient: DatabaseClient,
-    userRepository: UserRepository,
-    passwordValidator: PasswordValidator,
-    credentials: Credentials,
-  ): Promise<User | false>;
+export interface LoginUseCase {
+  (credentials: LoginCredentials): Promise<User | null>;
 }
 
-export const LoginUseCase: ILoginUseCase = async (
-  dbClient,
-  userRespository,
-  passwordValidator,
-  credentials,
-) => {
-  const user = await userRespository.findByEmail(dbClient, credentials?.email);
-  if (!user) throw new Error("User not found");
+export type Dependencies = {
+  userRepository: UserRepository;
+  tokenValidator: TokenValidator;
+};
 
-  if (
-    !(await passwordValidator.validate(credentials?.password, user?.password))
-  )
-    throw new Error("Invalid credentials");
+type LoginCredentials = {
+  email: string;
+  token: string;
+};
 
-  return user;
+export const createLoginUseCase = ({
+  userRepository,
+  tokenValidator,
+}: Dependencies) => {
+  return async (credentials: LoginCredentials) => {
+    const { email, token } = credentials;
+    
+    const user = await userRepository.findByEmail(email);
+    await tokenValidator.validate(token);
+    
+    return user;
+  };
 };

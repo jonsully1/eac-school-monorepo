@@ -4,16 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --verbose"
+    "test:unit": "jest -c jest.config.unit.json --watchAll --verbose",
+    "test:integration": "npm run docker:run:test && jest -c jest.config.integration.json --runInBand --watchAll --verbose && npm run docker:down:test",
+    "docker:run:test": "docker compose --env-file .env.test -f tests/integration/docker-compose.yml up -d",
+    "docker:down:test": "docker compose --env-file .env.test -f tests/integration/docker-compose.yml down --remove-orphans"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.7",
+    "dotenv": "^16.4.7",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.5",
+    "uuid": "^11.0.3"
   }
 }

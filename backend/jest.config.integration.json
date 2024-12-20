@@ -7,7 +7,7 @@
   "transformIgnorePatterns": ["node_modules/"],
   "collectCoverage": true,
   "coverageDirectory": "coverage",
-  "collectCoverageFrom": ["src/**/*.ts"],
+  "collectCoverageFrom": ["src/infrastructure/**/*.ts"],
   "coverageThreshold": {
     "global": {
       "branches": 80,
@@ -15,5 +15,11 @@
       "lines": 95,
       "statements": 95
     }
-  }
+  },
+  "clearMocks": true,
+  "restoreMocks": true,
+  "resetMocks": true,
+  "globalSetup": "<rootDir>/tests/integration/globalSetup.ts",
+  "testTimeout": 3000,
+  "testMatch": ["<rootDir>/tests/integration/**/*.spec.ts"]
 }
