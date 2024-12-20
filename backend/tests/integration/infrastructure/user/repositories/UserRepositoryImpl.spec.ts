@@ -1,14 +1,9 @@
 import mysql, { Connection } from "mysql2/promise";
 import { createUserRepository } from "../../../../../src/infrastructure/user/repositories/UserRepositoryImpl";
 import { createMysqlDatabaseGateway } from "../../../../../src/infrastructure/adapters/MysqlDatabaseGateway";
-import { envVars } from "../../../../../src/core/common/envVars";
+import { envVars } from "../../../../../src/utils/envVars";
 import { UserRepository } from "../../../../../src/core/domain/user/repositories/UserRepository";
 import { DatabaseGateway } from "../../../../../src/core/common/ports/DatabaseGateway";
-import {
-  createTables,
-  dropTables,
-  seedTables,
-} from "../../../../utils/migration";
 import { admins } from "../../../../utils/testData";
 
 describe("UserRepositoryImpl: findByEmail", () => {
@@ -21,18 +16,12 @@ describe("UserRepositoryImpl: findByEmail", () => {
   const unknownEmail = "unknownEmail@email.com";
 
   beforeAll(async () => {
-    const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, NODE_ENV } =
+    const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } =
       await envVars();
 
     db = await mysql.createConnection(
       `mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
     );
-
-    if (db) {
-      await dropTables(db, NODE_ENV as "test");
-      await createTables(db, NODE_ENV as "test");
-      await seedTables(db, NODE_ENV as "test");
-    }
   });
 
   afterAll(() => {

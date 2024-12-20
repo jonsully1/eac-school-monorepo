@@ -331,8 +331,6 @@ interface TableAction {
 
 export const dropTables: TableAction = async (db, NODE_ENV) => {
   try {
-    console.info("dropping tables...");
-
     const notesTableExistsQuery =
       "SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'note'";
     const [[{ count }]] = (await db.query(
@@ -363,8 +361,6 @@ export const dropTables: TableAction = async (db, NODE_ENV) => {
 
 export const createTables: TableAction = async (db, NODE_ENV) => {
   try {
-    console.info("creating tables...");
-
     if (!acceptedEnvironents[NODE_ENV]) {
       throw new Error(
         "attempted to create tables outside of an acceptedEnvironents",
@@ -398,8 +394,6 @@ export const createTables: TableAction = async (db, NODE_ENV) => {
 
 export const seedTables: TableAction = async (db, NODE_ENV) => {
   try {
-    console.info("seeding tables...");
-
     if (!acceptedEnvironents[NODE_ENV]) {
       throw new Error(
         "attempted to seed tables outside of acceptedEnvironents",

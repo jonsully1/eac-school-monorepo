@@ -9,7 +9,7 @@ import {
 import { createUserRepository } from "../../../../../../src/infrastructure/user/repositories/UserRepositoryImpl";
 import { createTokenValidator } from "../../../../../../src/infrastructure/user/services/TokenValidator";
 import { createMysqlDatabaseGateway } from "../../../../../../src/infrastructure/adapters/MysqlDatabaseGateway";
-import { envVars } from "../../../../../../src/core/common/envVars";
+import { envVars } from "../../../../../../src/utils/envVars";
 import { admins } from "../../../../../utils/testData";
 
 describe("Login Use Case", () => {
