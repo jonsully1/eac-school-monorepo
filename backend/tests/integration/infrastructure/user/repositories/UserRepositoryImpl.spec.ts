@@ -42,10 +42,4 @@ describe("UserRepositoryImpl: findByEmail", () => {
 
     expect(response).toStrictEqual(expectedAdmin);
   });
-
-  it("should return the admin user if found", async () => {
-    await expect(userRepositoryImpl!.findByEmail(unknownEmail)).rejects.toThrow(
-      "User not found",
-    );
-  });
 });

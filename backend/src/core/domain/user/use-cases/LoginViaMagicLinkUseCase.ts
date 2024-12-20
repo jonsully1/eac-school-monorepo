@@ -2,8 +2,8 @@ import { User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
 import { SessionService } from "../services/SessionService";
 
-export interface LoginUseCase {
-  (credentials: LoginCredentials): Promise<User | null>;
+export interface LoginViaMagicLinkUseCase {
+  (credentials: Credentials): Promise<User | null>;
 }
 
 export type Dependencies = {
@@ -11,21 +11,19 @@ export type Dependencies = {
   sessionService: SessionService;
 };
 
-type LoginCredentials = {
+type Credentials = {
   email: string;
   token: string;
 };
 
-export const createLoginUseCase = ({
+export const createLoginViaMagicLinkUseCase = ({
   userRepository,
   sessionService,
 }: Dependencies) => {
-  return async (credentials: LoginCredentials) => {
+  return async (credentials: Credentials) => {
     const { email, token } = credentials;
-
     const user = await userRepository.findByEmail(email);
     await sessionService.validateToken(token);
-
     return user;
   };
 };

@@ -11,17 +11,7 @@ describe("UserRepositoryImpl: findByEmail", () => {
 
   it("should return the user if found", async () => {
     jest.spyOn(mockDbGateway, "findOne").mockResolvedValue(mockUser);
-
     const response = await userRepositoryImpl!.findByEmail(mockUser.email);
-
     expect(response).toStrictEqual(mockUser);
-  });
-
-  it("should throw error if user email is not found", async () => {
-    jest.spyOn(mockDbGateway, "findOne").mockResolvedValue(false);
-
-    await expect(
-      userRepositoryImpl!.findByEmail(mockUser.email),
-    ).rejects.toThrow("User not found");
   });
 });

@@ -50,4 +50,17 @@ describe("SendMagicLink Use Case", () => {
 
     expect(response).toStrictEqual({ message: mockSendMagicLinkResponse });
   });
+
+  it('should throw UserNotFoundError if user does not exist', async () => {
+    jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(null);
+    await expect(SendMagicLinkUseCase!(sendMagicLinkArgs)).rejects.toThrow('User not found')
+  })
+  
+  it('should throw UserInvalidError if user data is incomplete', async () => {
+    const user = { ...mockUser };
+    user.password = '';
+
+    jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(user);
+    await expect(SendMagicLinkUseCase!(sendMagicLinkArgs)).rejects.toThrow('User invalid')
+  })
 });

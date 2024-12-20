@@ -1,8 +1,8 @@
 import {
-  createLoginUseCase,
-  type LoginUseCase,
+  createLoginViaMagicLinkUseCase,
+  type LoginViaMagicLinkUseCase,
   type Dependencies,
-} from "../../../../../../src/core/domain/user/use-cases/LoginUseCase";
+} from "../../../../../../src/core/domain/user/use-cases/LoginViaMagicLinkUseCase";
 import { MockSessionService } from "../../../../../mockData/mockSessionService";
 import {
   mockUser,
@@ -10,8 +10,8 @@ import {
   MockUserRespository,
 } from "../../../../../mockData/mockUser";
 
-describe("Login Use Case", () => {
-  let LoginUseCase: null | LoginUseCase;
+describe("LoginViaMagicLink Use Case", () => {
+  let LoginViaMagicLinkUseCase: null | LoginViaMagicLinkUseCase;
   let dependencies: null | Dependencies;
 
   beforeEach(() => {
@@ -20,14 +20,14 @@ describe("Login Use Case", () => {
       sessionService: MockSessionService,
     };
 
-    LoginUseCase = createLoginUseCase(dependencies);
+    LoginViaMagicLinkUseCase = createLoginViaMagicLinkUseCase(dependencies);
   });
 
   it("should return the user object when password is correct", async () => {
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
     jest.spyOn(MockSessionService, "validateToken").mockResolvedValue(true);
 
-    const response = await LoginUseCase!(mockLoginCredentials);
+    const response = await LoginViaMagicLinkUseCase!(mockLoginCredentials);
 
     expect(response).toStrictEqual(mockUser);
   });
@@ -37,7 +37,7 @@ describe("Login Use Case", () => {
       .spyOn(MockUserRespository, "findByEmail")
       .mockRejectedValue(new Error("User not found"));
 
-    await expect(LoginUseCase!(mockLoginCredentials)).rejects.toThrow(
+    await expect(LoginViaMagicLinkUseCase!(mockLoginCredentials)).rejects.toThrow(
       "User not found",
     );
   });
@@ -48,7 +48,7 @@ describe("Login Use Case", () => {
       .spyOn(MockSessionService, "validateToken")
       .mockRejectedValue(new Error("Invalid token"));
 
-    await expect(LoginUseCase!(mockLoginCredentials)).rejects.toThrow(
+    await expect(LoginViaMagicLinkUseCase!(mockLoginCredentials)).rejects.toThrow(
       "Invalid token",
     );
   });

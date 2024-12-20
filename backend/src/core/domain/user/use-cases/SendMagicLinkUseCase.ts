@@ -1,6 +1,9 @@
+import { UserInvalidError } from "../errors/UserInvalidError";
+import { UserNotFoundError } from "../errors/UserNotFoundError";
 import { UserRepository } from "../repositories/UserRepository";
 import { EmailService } from "../services/EmailService";
 import { SessionService } from "../services/SessionService";
+import { isValidUser } from "../validations/isValidUser";
 
 type SendMagicLinkArgs = {
   email: string;
@@ -24,7 +27,10 @@ export const createSendMagicLinkUseCase = ({
 }: Dependencies) => {
   return async ({ email, baseUrl }: SendMagicLinkArgs) => {
     const user = await userRepository.findByEmail(email);
-    const token = await sessionService.generateToken(user?.uuid || "");
+    if (!user) throw UserNotFoundError("User not found", email);
+    if (!isValidUser(user)) throw UserInvalidError("User invalid");
+
+    const token = await sessionService.generateToken(user.uuid);
     const magicLink = await emailService.generateMagicLink(baseUrl, token);
     const response = await emailService.sendMagicLinkEmail(magicLink);
     return { message: response };
