@@ -1,5 +1,6 @@
 import { Connection, RowDataPacket } from "mysql2/promise";
 import { DatabaseGateway } from "../../core/common/ports/DatabaseGateway";
+import { QueryExecutionError } from "../../core/common/errors/QueryExecutionError";
 
 export const createMysqlDatabaseGateway = (
   connection: Connection,
@@ -9,17 +10,20 @@ export const createMysqlDatabaseGateway = (
     collection: string,
     query: Record<string, any>,
   ): Promise<any | null> {
-    const whereClause = `WHERE ${Object.keys(query)
-      .map((key) => `\`${key}\` = ?`)
-      .join(" AND ")}`;
-    const values = Object.values(query);
+    try {
+      const whereClause = `WHERE ${Object.keys(query)
+        .map((key) => `\`${key}\` = ?`)
+        .join(" AND ")}`;
+      const values = Object.values(query);
+      const sql = `SELECT ${columns.join(
+        ", ",
+      )} FROM \`${collection}\` ${whereClause}`;
 
-    const sql = `SELECT ${columns.join(
-      ", ",
-    )} FROM \`${collection}\` ${whereClause}`;
-
-    const [rows] = await connection.execute<RowDataPacket[]>(sql, values);
-    return rows.length > 0 ? rows[0] : null;
+      const [rows] = await connection.execute<RowDataPacket[]>(sql, values);
+      return rows.length > 0 ? rows[0] : null;
+    } catch (err) {
+      throw QueryExecutionError((err as Error).message);
+    }
   },
 
   // async findMany(

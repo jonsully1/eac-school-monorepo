@@ -5,12 +5,10 @@ export const createUserRepository = (
   dbGateway: DatabaseGateway,
 ): UserRepository => ({
   findByEmail: async (email) => {
-    const admin = await dbGateway.findOne(
-      ["id", "uuid", "name", "surname", "email"],
-      "admin",
-      { email, active: 1 },
-    );
-
+    const columns = ["id", "uuid", "name", "surname", "email"];
+    const table = "admin";
+    const query = { email, active: 1 };
+    const admin = await dbGateway.findOne(columns, table, query);
     return admin;
   },
 });

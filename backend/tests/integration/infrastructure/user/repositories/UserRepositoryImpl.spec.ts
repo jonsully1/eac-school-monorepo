@@ -6,7 +6,7 @@ import { UserRepository } from "../../../../../src/core/domain/user/repositories
 import { DatabaseGateway } from "../../../../../src/core/common/ports/DatabaseGateway";
 import { admins } from "../../../../utils/testData";
 
-describe("UserRepositoryImpl: findByEmail", () => {
+describe("UserRepositoryImpl using MysqlDatabaseGateway: findByEmail", () => {
   let db: false | Connection;
   let dbGateway: null | DatabaseGateway;
   let userRepositoryImpl: null | UserRepository;
@@ -41,5 +41,13 @@ describe("UserRepositoryImpl: findByEmail", () => {
     );
 
     expect(response).toStrictEqual(expectedAdmin);
+  });
+  
+  it("should return null if an unknown email is used", async () => {
+    const response = await userRepositoryImpl!.findByEmail(
+      unknownEmail,
+    );
+
+    expect(response).toStrictEqual(null);
   });
 });

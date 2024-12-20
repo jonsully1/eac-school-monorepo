@@ -4,7 +4,8 @@
     "module": "commonjs",
     "strict": true,
     "outDir": "./dist",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noUnusedLocals": true
   },
   "include": ["src/**/*.ts", "tests/**/*.ts", "tests/integration/globalSetup.integration.ts"],
   "exclude": ["node_modules"]
