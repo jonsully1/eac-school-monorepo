@@ -10,6 +10,7 @@ export const mockUser = {
   id: "1",
   email: mockLoginCredentials.email,
   password: "asdfshfiwjebhwpefu9348mvt3498c", // hashed, from db
+  uuid: "a856c5bb-e755-47ec-9a46-66d5738e15db",
 };
 
 export const mockDbGateway: DatabaseGateway = {
