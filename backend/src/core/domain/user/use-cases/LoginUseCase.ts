@@ -1,6 +1,6 @@
 import { User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
-import { TokenValidator } from "../services/TokenValidator";
+import { SessionService } from "../services/SessionService";
 
 export interface LoginUseCase {
   (credentials: LoginCredentials): Promise<User | null>;
@@ -8,7 +8,7 @@ export interface LoginUseCase {
 
 export type Dependencies = {
   userRepository: UserRepository;
-  tokenValidator: TokenValidator;
+  sessionService: SessionService;
 };
 
 type LoginCredentials = {
@@ -18,14 +18,14 @@ type LoginCredentials = {
 
 export const createLoginUseCase = ({
   userRepository,
-  tokenValidator,
+  sessionService,
 }: Dependencies) => {
   return async (credentials: LoginCredentials) => {
     const { email, token } = credentials;
-    
+
     const user = await userRepository.findByEmail(email);
-    await tokenValidator.validate(token);
-    
+    await sessionService.validateToken(token);
+
     return user;
   };
 };

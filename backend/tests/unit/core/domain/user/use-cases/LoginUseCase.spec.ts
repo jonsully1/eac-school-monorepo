@@ -3,7 +3,7 @@ import {
   type LoginUseCase,
   type Dependencies,
 } from "../../../../../../src/core/domain/user/use-cases/LoginUseCase";
-import { MockTokenValidator } from "../../../../../mockData/mockTokenValidator";
+import { MockSessionService } from "../../../../../mockData/mockSessionService";
 import {
   mockUser,
   mockLoginCredentials,
@@ -17,7 +17,7 @@ describe("Login Use Case", () => {
   beforeEach(() => {
     dependencies = {
       userRepository: MockUserRespository,
-      tokenValidator: MockTokenValidator,
+      sessionService: MockSessionService,
     };
 
     LoginUseCase = createLoginUseCase(dependencies);
@@ -25,7 +25,7 @@ describe("Login Use Case", () => {
 
   it("should return the user object when password is correct", async () => {
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
-    jest.spyOn(MockTokenValidator, "validate").mockResolvedValue(true);
+    jest.spyOn(MockSessionService, "validateToken").mockResolvedValue(true);
 
     const response = await LoginUseCase!(mockLoginCredentials);
 
@@ -44,7 +44,9 @@ describe("Login Use Case", () => {
 
   it("should throw error if the user password is not valid", async () => {
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
-    jest.spyOn(MockTokenValidator, "validate").mockRejectedValue(new Error("Invalid token"));
+    jest
+      .spyOn(MockSessionService, "validateToken")
+      .mockRejectedValue(new Error("Invalid token"));
 
     await expect(LoginUseCase!(mockLoginCredentials)).rejects.toThrow(
       "Invalid token",

@@ -1,4 +1,3 @@
-import { MockTokenValidator } from "../../../../../mockData/mockTokenValidator";
 import {
   mockUser,
   MockUserRespository,
@@ -15,6 +14,7 @@ import {
   type SendMagicLinkUseCase,
 } from "../../../../../../src/core/domain/user/use-cases/SendMagicLinkUseCase";
 import { Dependencies } from "../../../../../../src/core/domain/user/use-cases/SendMagicLinkUseCase";
+import { MockSessionService } from "../../../../../mockData/mockSessionService";
 
 const MockEmailService: EmailService = {
   generateMagicLink: jest.fn(),
@@ -29,7 +29,7 @@ describe("SendMagicLink Use Case", () => {
   beforeEach(() => {
     dependencies = {
       userRepository: MockUserRespository,
-      tokenValidator: MockTokenValidator,
+      sessionService: MockSessionService,
       emailService: MockEmailService,
     };
 
@@ -38,7 +38,7 @@ describe("SendMagicLink Use Case", () => {
 
   it("should send a magic link to the user if they exist", async () => {
     jest.spyOn(MockUserRespository, "findByEmail").mockResolvedValue(mockUser);
-    jest.spyOn(MockTokenValidator, "generate").mockResolvedValue(mockToken);
+    jest.spyOn(MockSessionService, "generateToken").mockResolvedValue(mockToken);
     jest
       .spyOn(MockEmailService, "generateMagicLink")
       .mockResolvedValue(mockExpectedMagicLink);

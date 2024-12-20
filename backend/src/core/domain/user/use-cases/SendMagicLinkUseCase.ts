@@ -1,6 +1,6 @@
 import { UserRepository } from "../repositories/UserRepository";
 import { EmailService } from "../services/EmailService";
-import { TokenValidator } from "../services/TokenValidator";
+import { SessionService } from "../services/SessionService";
 
 type SendMagicLinkArgs = {
   email: string;
@@ -13,18 +13,18 @@ export interface SendMagicLinkUseCase {
 
 export type Dependencies = {
   userRepository: UserRepository;
-  tokenValidator: TokenValidator;
+  sessionService: SessionService;
   emailService: EmailService;
 };
 
 export const createSendMagicLinkUseCase = ({
   userRepository,
-  tokenValidator,
+  sessionService,
   emailService,
 }: Dependencies) => {
   return async ({ email, baseUrl }: SendMagicLinkArgs) => {
     const user = await userRepository.findByEmail(email);
-    const token = await tokenValidator.generate(user?.uuid || "");
+    const token = await sessionService.generateToken(user?.uuid || "");
     const magicLink = await emailService.generateMagicLink(baseUrl, token);
     const response = await emailService.sendMagicLinkEmail(magicLink);
     return { message: response };

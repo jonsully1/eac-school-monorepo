@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
-import { TokenValidator } from "../../../core/domain/user/services/TokenValidator";
+import { SessionService } from "../../../core/domain/user/services/SessionService";
 
-export const createTokenValidator = (
+export const createSessionService = (
   secret: string,
   expiresIn: number,
-): TokenValidator => ({
-  validate: async (token: string): Promise<boolean> =>
+): SessionService => ({
+  validateToken: async (token: string): Promise<boolean> =>
     jwt.verify(token, secret) ? true : false,
-  generate: async (uuid: string) => {
+  generateToken: async (uuid: string) => {
     const now = new Date().getTime();
     const payload = { uuid };
     const options = { expiresIn: now + expiresIn };
